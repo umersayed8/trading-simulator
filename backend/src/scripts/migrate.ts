@@ -198,7 +198,7 @@ const migrations = [
   `ALTER TABLE users ADD COLUMN IF NOT EXISTS skill_level ENUM('beginner','intermediate') DEFAULT 'beginner'`,
 ];
 
-async function migrate() {
+export async function runMigrations() {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306'),
@@ -228,7 +228,3 @@ async function migrate() {
   await connection.end();
 }
 
-migrate().catch((error) => {
-  console.error('Migration failed:', error);
-  process.exit(1);
-});

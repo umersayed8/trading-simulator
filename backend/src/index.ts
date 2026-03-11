@@ -2,6 +2,7 @@
 // With ESM, all imports are hoisted, so we use dotenv/config as a side-effect
 // import at the very top to guarantee .env is parsed first.
 import 'dotenv/config';
+import { runMigrations } from "./scripts/migrate";
 
 import express from 'express';
 import cors from 'cors';
@@ -98,6 +99,7 @@ async function startServer() {
     console.log(`✅ INDIAN_API_KEY loaded (${process.env.INDIAN_API_KEY!.slice(0, 6)}…)`);
   }
 
+  await runMigrations();
   // Test database connection
   const dbConnected = await testConnection();
   if (!dbConnected) {
