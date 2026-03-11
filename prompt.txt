@@ -1,0 +1,276 @@
+You are a senior full-stack software architect and academic project engineer.
+Your task is to design, develop, and document a feature-rich, production-ready full-stack web application as a BTech CSE Final Year Project.
+
+:small_blue_diamond: PROJECT TITLE
+
+“Gamified Stock Trading Simulator for Financial Literacy in Teenagers with Algorithmic Trading”
+
+:small_blue_diamond: PROJECT GOAL
+
+Build a web-based stock trading simulator that teaches financial literacy to teenagers (ages 13–18) using:
+
+Gamification
+
+Story-based learning
+
+Interactive tutorials
+
+Real-time Indian stock market data
+
+Algorithmic trading (simulation only, no real money)
+
+The platform must use virtual money only and clearly avoid gambling or real trading risks.
+
+:small_blue_diamond: TARGET USERS
+
+Teenagers (13–18)
+
+Absolute beginners in finance
+
+Mobile-first users
+
+:small_blue_diamond: PLATFORM & STACK (MANDATORY)
+Frontend
+
+React
+
+TypeScript
+
+Mobile-first responsive design
+
+Professional, game-like UI (not cartoonish)
+
+Backend
+
+Node.js
+
+TypeScript
+
+RESTful API architecture
+
+Database
+
+Cloud-hosted database (you may choose: PostgreSQL / MongoDB / Firebase, write in MySQL (prefrred))
+
+Well-normalized schema
+
+Hosting
+
+Cloud-deployable (Vercel / Render / AWS / Railway – choose one and justify)
+
+:small_blue_diamond: CORE FEATURES
+:one: User System
+
+Authentication (Email/Password + optional OAuth)
+
+Secure session handling
+
+User profiles with progress tracking
+
+:two: Story-Based Onboarding
+
+Short interactive storyline introducing:
+
+What stocks are
+
+Why investing matters
+
+Virtual money concept
+
+Story unlocks the trading dashboard
+
+:three: Virtual Trading Engine
+
+Starting virtual capital: ₹100,000
+
+Buy & sell Indian stocks
+
+Portfolio management
+
+Real-time profit & loss calculation
+
+Order history & trade logs
+
+:four: Real-Time Market Data
+
+Indian stock market (NSE/BSE)
+
+Free API only (no paid services)
+
+Graceful fallback if API rate limits occur
+
+No offline mode
+
+:five: Gamification System
+
+Implement all of the following:
+
+XP system
+
+Levels
+
+Badges
+
+Leaderboards (solo + multiplayer ranking)
+
+Daily challenges
+
+Streak rewards
+
+Time-based events
+
+Unlockable achievements
+
+:six: Learning & Financial Literacy Module
+
+Interactive tutorials
+
+Story-based lessons
+
+Topics:
+
+Stock basics
+
+Risk vs reward
+
+Diversification
+
+Market trends
+
+Candlestick basics
+
+Long-term vs short-term investing
+
+Educational feedback when users make bad trades
+
+:small_blue_diamond: :fire: ALGORITHMIC TRADING (IMPORTANT)
+
+Implement simulated algorithmic trading:
+
+Algo Trading Features
+
+Pre-built strategies:
+
+Moving Average Crossover
+
+RSI-based strategy
+
+Momentum strategy
+
+Users can:
+
+Enable/disable algorithms
+
+Backtest strategies on historical data
+
+Run algorithms on virtual portfolios
+
+Visual explanation of:
+
+Why a trade was executed
+
+What indicators triggered it
+
+No real trades, no brokerage integration
+
+:warning: Algo trading must be educational, not automated profit-focused.
+
+:small_blue_diamond: UI / UX REQUIREMENTS
+
+Mobile-first
+
+Clean professional dashboard
+
+Game-like progress indicators
+
+Charts, graphs, progress bars
+
+Simple language suitable for teens
+
+Fast loading and intuitive navigation
+
+:small_blue_diamond: SECURITY & ETHICS
+
+Virtual money only
+
+Clear disclaimer (educational purpose)
+
+No parental control needed
+
+Secure cloud data storage
+
+No sensitive personal data collected
+
+:small_blue_diamond: DELIVERABLES (MANDATORY OUTPUT)
+
+Generate everything below:
+
+Complete source code (frontend + backend)
+
+Database schema (ER diagram explanation in text)
+
+REST API documentation
+
+README.md (project overview, setup, features)
+
+Deployment guide (step-by-step)
+
+Environment configuration guide
+
+Final folder structure
+
+Explanation of algorithms used
+
+Sample data seeds
+
+:small_blue_diamond: TEAM & SCOPE
+
+Team size: 4 members
+
+Feature-rich & advanced
+
+Production-ready but academic-friendly
+
+Code must be clean, modular, and well-commented
+
+:small_blue_diamond: EXECUTION INSTRUCTIONS (VERY IMPORTANT)
+
+You must:
+
+Start with system architecture
+
+Design database schema
+
+Design API contracts
+
+Build backend services
+
+Build frontend UI
+
+Integrate stock data API
+
+Implement gamification engine
+
+Implement algo trading engine
+
+Add learning modules
+
+Ensure mobile-first UI
+
+Provide deployment steps
+
+Validate everything works together
+
+:warning: Do NOT skip steps
+:warning: Do NOT leave placeholders
+:warning: Do NOT assume real money usage
+
+:small_blue_diamond: QUALITY STANDARD
+
+Final-year engineering level
+
+Original, plagiarism-safe
+
+Clear explanations for evaluation
+
+Ready for demonstration & viva

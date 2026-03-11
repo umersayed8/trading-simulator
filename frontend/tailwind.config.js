@@ -1,0 +1,101 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        // Primary: deep slate-teal (fintech, professional)
+        primary: {
+          50:  '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          800: '#115e59',
+          900: '#134e4a',
+          950: '#042f2e',
+        },
+        // Surface tokens for dark mode
+        surface: {
+          0:   '#ffffff',
+          50:  '#f8fafc',
+          100: '#f1f5f9',
+          200: '#e2e8f0',
+          800: '#1e293b',
+          850: '#172032',
+          900: '#0f172a',
+          950: '#080e1a',
+        },
+        // Accent: amber for gains/XP/gold
+        accent: {
+          50:  '#fffbeb',
+          100: '#fef3c7',
+          400: '#fbbf24',
+          500: '#f59e0b',
+          600: '#d97706',
+        },
+        // Semantic
+        up:   { DEFAULT: '#10b981', light: '#d1fae5', dark: '#065f46' },
+        down: { DEFAULT: '#ef4444', light: '#fee2e2', dark: '#7f1d1d' },
+      },
+      fontFamily: {
+        sans:    ['DM Sans', 'system-ui', 'sans-serif'],
+        display: ['Sora', 'system-ui', 'sans-serif'],
+        mono:    ['JetBrains Mono', 'monospace'],
+      },
+      borderRadius: {
+        '3xl': '1.5rem',
+        '4xl': '2rem',
+      },
+      boxShadow: {
+        'card':     '0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07)',
+        'card-md':  '0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07)',
+        'card-lg':  '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.05)',
+        'glow-teal': '0 0 20px rgba(20,184,166,0.3)',
+        'glow-up':   '0 0 16px rgba(16,185,129,0.25)',
+        'glow-down': '0 0 16px rgba(239,68,68,0.25)',
+        'inner-sm':  'inset 0 1px 2px 0 rgb(0 0 0 / 0.05)',
+      },
+      animation: {
+        'fade-in':      'fade-in 0.35s ease both',
+        'fade-up':      'fade-up 0.4s cubic-bezier(0.16,1,0.3,1) both',
+        'fade-down':    'fade-down 0.35s ease both',
+        'slide-right':  'slide-right 0.35s cubic-bezier(0.16,1,0.3,1) both',
+        'scale-in':     'scale-in 0.3s cubic-bezier(0.16,1,0.3,1) both',
+        'float':        'float 4s ease-in-out infinite',
+        'float-slow':   'float 6s ease-in-out infinite',
+        'pulse-soft':   'pulse-soft 3s ease-in-out infinite',
+        'shimmer':      'shimmer 2s linear infinite',
+        'bounce-soft':  'bounce-soft 2s ease-in-out infinite',
+        'spin-slow':    'spin 3s linear infinite',
+        'wiggle':       'wiggle 0.5s ease-in-out',
+        'pop':          'pop 0.4s cubic-bezier(0.36,0.07,0.19,0.97) both',
+        'xp-fill':      'xp-fill 1s cubic-bezier(0.16,1,0.3,1) both',
+        'marquee':      'marquee 30s linear infinite',
+      },
+      keyframes: {
+        'fade-in':     { from:{ opacity:'0' }, to:{ opacity:'1' } },
+        'fade-up':     { from:{ opacity:'0', transform:'translateY(16px)' }, to:{ opacity:'1', transform:'translateY(0)' } },
+        'fade-down':   { from:{ opacity:'0', transform:'translateY(-16px)' }, to:{ opacity:'1', transform:'translateY(0)' } },
+        'slide-right': { from:{ opacity:'0', transform:'translateX(-16px)' }, to:{ opacity:'1', transform:'translateX(0)' } },
+        'scale-in':    { from:{ opacity:'0', transform:'scale(0.92)' }, to:{ opacity:'1', transform:'scale(1)' } },
+        'float':       { '0%,100%':{ transform:'translateY(0)' }, '50%':{ transform:'translateY(-10px)' } },
+        'pulse-soft':  { '0%,100%':{ opacity:'1' }, '50%':{ opacity:'0.65' } },
+        'shimmer':     { '0%':{ backgroundPosition:'200% 0' }, '100%':{ backgroundPosition:'-200% 0' } },
+        'bounce-soft': { '0%,100%':{ transform:'translateY(0)' }, '50%':{ transform:'translateY(-5px)' } },
+        'wiggle':      { '0%,100%':{ transform:'rotate(0deg)' }, '25%':{ transform:'rotate(-8deg)' }, '75%':{ transform:'rotate(8deg)' } },
+        'pop':         { '0%':{ transform:'scale(0.8)', opacity:'0' }, '60%':{ transform:'scale(1.08)' }, '100%':{ transform:'scale(1)', opacity:'1' } },
+        'xp-fill':     { from:{ width:'0%' }, to:{ width:'var(--xp-pct)' } },
+        'marquee':     { '0%':{ transform:'translateX(0)' }, '100%':{ transform:'translateX(-50%)' } },
+      },
+      transitionTimingFunction: {
+        'spring': 'cubic-bezier(0.16,1,0.3,1)',
+      },
+    },
+  },
+  plugins: [],
+};

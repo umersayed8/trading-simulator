@@ -1,0 +1,446 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════
+   CSS CUSTOM PROPERTIES (DESIGN TOKENS)
+═══════════════════════════════════════ */
+
+@layer base {
+  :root {
+    /* Light mode surfaces */
+    --bg-page:     #f8fafc;
+    --bg-card:     #ffffff;
+    --bg-sidebar:  #ffffff;
+    --bg-input:    #ffffff;
+    --border:      rgba(15,23,42,0.08);
+    --border-focus: #14b8a6;
+
+    /* Text */
+    --text-primary:   #0f172a;
+    --text-secondary: #475569;
+    --text-muted:     #94a3b8;
+    --text-inverse:   #ffffff;
+
+    /* Brand */
+    --brand-from: #0d9488;
+    --brand-to:   #14b8a6;
+    --brand-text: #0d9488;
+
+    /* Chart */
+    --chart-bg:   #ffffff;
+    --chart-grid: #f1f5f9;
+    --chart-text: #475569;
+    --chart-border: #e2e8f0;
+
+    /* Sidebar */
+    --sidebar-active-bg:   rgba(20,184,166,0.08);
+    --sidebar-active-text: #0d9488;
+    --sidebar-hover-bg:    rgba(15,23,42,0.04);
+
+    /* Shimmer */
+    --shimmer-start: #f1f5f9;
+    --shimmer-mid:   #e2e8f0;
+
+    /* Radius */
+    --radius-card: 1rem;
+    --radius-btn:  0.625rem;
+  }
+
+  .dark {
+    --bg-page:    #0c1220;
+    --bg-card:    #131d2e;
+    --bg-sidebar: #0f1826;
+    --bg-input:   #1a2540;
+    --border:     rgba(255,255,255,0.07);
+    --border-focus: #2dd4bf;
+
+    --text-primary:   #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted:     #475569;
+    --text-inverse:   #0f172a;
+
+    --brand-from: #2dd4bf;
+    --brand-to:   #14b8a6;
+    --brand-text: #2dd4bf;
+
+    --chart-bg:    #131d2e;
+    --chart-grid:  rgba(255,255,255,0.05);
+    --chart-text:  #94a3b8;
+    --chart-border: rgba(255,255,255,0.08);
+
+    --sidebar-active-bg:   rgba(45,212,191,0.1);
+    --sidebar-active-text: #2dd4bf;
+    --sidebar-hover-bg:    rgba(255,255,255,0.04);
+
+    --shimmer-start: #1a2540;
+    --shimmer-mid:   #243050;
+  }
+
+  html {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    transition: background-color 0.2s, color 0.2s;
+  }
+}
+
+/* ═══════════════════════════════════════
+   SEMANTIC COMPONENT CLASSES
+═══════════════════════════════════════ */
+
+@layer components {
+
+  /* ─── Cards ─── */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    box-shadow: var(--tw-shadow, 0 1px 3px 0 rgb(0 0 0 / 0.07));
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+
+  .card-hover {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .card-hover:hover {
+    box-shadow: 0 8px 24px -4px rgb(0 0 0 / 0.12);
+    border-color: rgba(20,184,166,0.3);
+    transform: translateY(-1px);
+  }
+
+  /* ─── Inputs ─── */
+  .input {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .input::placeholder { color: var(--text-muted); }
+  .input:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(20,184,166,0.15);
+  }
+
+  .label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.375rem;
+  }
+
+  /* ─── Buttons ─── */
+  .btn-base {
+    @apply inline-flex items-center justify-center gap-2 font-semibold
+    transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2
+    disabled:opacity-50 disabled:cursor-not-allowed active:scale-95;
+    border-radius: var(--radius-btn);
+    padding: 0.5rem 1rem;
+  }
+
+  .btn-primary {
+    @apply btn-base bg-primary-600 text-white hover:bg-primary-700
+    focus:ring-primary-500 shadow-sm hover:shadow-md;
+  }
+
+  .btn-secondary {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    @apply btn-base hover:shadow-sm;
+  }
+  .btn-secondary:hover { border-color: rgba(20,184,166,0.4); }
+
+  .btn-ghost {
+    @apply btn-base;
+    background: transparent;
+    color: var(--text-secondary);
+  }
+  .btn-ghost:hover { background: var(--sidebar-hover-bg); color: var(--text-primary); }
+
+  .btn-success {
+    @apply btn-base bg-up text-white hover:bg-emerald-600 focus:ring-emerald-500;
+  }
+
+  .btn-danger {
+    @apply btn-base bg-down text-white hover:bg-red-600 focus:ring-red-500;
+  }
+
+  /* ─── Badges ─── */
+  .badge-base {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .badge-success { @apply badge-base bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300; }
+  .badge-danger  { @apply badge-base bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-300; }
+  .badge-primary { @apply badge-base bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300; }
+  .badge-warning { @apply badge-base bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300; }
+  .badge-neutral { @apply badge-base bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300; }
+
+  /* ─── XP Bar ─── */
+  .xp-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .xp-bar-fill {
+    height: 100%;
+    border-radius: 99px;
+    background: linear-gradient(90deg, var(--brand-from), var(--brand-to));
+    transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+  }
+
+  /* ─── Skeleton ─── */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--shimmer-start) 0%,
+      var(--shimmer-mid) 30%,
+      var(--shimmer-start) 60%,
+      var(--shimmer-mid) 80%,
+      var(--shimmer-start) 100%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 2s linear infinite;
+    border-radius: 0.5rem;
+  }
+
+  /* ─── Achievement cards ─── */
+  .achievement-unlocked {
+    border-radius: 1rem;
+    border: 2px solid #f59e0b;
+    padding: 1rem;
+    text-align: center;
+    background: linear-gradient(160deg, #fffbeb, var(--bg-card));
+    box-shadow: 0 4px 12px -2px rgba(245,158,11,0.15);
+    transition: all 0.25s;
+  }
+  .dark .achievement-unlocked {
+    background: linear-gradient(160deg, rgba(245,158,11,0.08), var(--bg-card));
+    box-shadow: 0 4px 12px -2px rgba(245,158,11,0.1);
+  }
+  .achievement-card-locked {
+    border-radius: 1rem;
+    border: 2px solid var(--border);
+    padding: 1rem;
+    text-align: center;
+    background: var(--bg-card);
+    opacity: 0.55;
+  }
+
+  /* ─── Lesson cards ─── */
+  .lesson-card-available {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+  }
+  .lesson-card-available:hover {
+    border-color: rgba(20,184,166,0.4);
+    box-shadow: 0 6px 20px -4px rgba(20,184,166,0.15);
+    transform: translateY(-1px);
+  }
+  .lesson-card-completed {
+    background: var(--bg-card);
+    border: 1.5px solid rgba(16,185,129,0.3);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+  }
+  .lesson-card-locked {
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* ─── Mascot tip bubble ─── */
+  .mascot-tip {
+    background: var(--bg-card);
+    border: 1px solid rgba(20,184,166,0.2);
+    border-radius: var(--radius-card);
+    padding: 1rem;
+    position: relative;
+  }
+  .dark .mascot-tip { border-color: rgba(45,212,191,0.15); }
+
+  /* ─── Profit / Loss ─── */
+  .profit { color: #10b981; font-weight: 600; }
+  .loss   { color: #ef4444; font-weight: 600; }
+
+  /* ─── Page wrapper ─── */
+  .page-enter { animation: fade-up 0.4s cubic-bezier(0.16,1,0.3,1) both; }
+}
+
+/* ═══════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════ */
+
+@layer utilities {
+  .font-display { font-family: 'Sora', system-ui, sans-serif; }
+
+  .text-brand {
+    background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+  }
+
+  .glass {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* stagger animation delays */
+  .delay-75  { animation-delay: 75ms; }
+  .delay-150 { animation-delay: 150ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+}
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════ */
+
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ═══════════════════════════════════════
+   MOBILE
+═══════════════════════════════════════ */
+
+@media (max-width: 640px) {
+  .card { padding: 1rem; }
+}
+
+/* Chart container dark mode override applied via JS */
+
+/* ═══════════════════════════════════════
+   DARK MODE — GRAY SCALE OVERRIDES
+   These remap Tailwind's gray-* classes so
+   hardcoded gray classes work in dark mode
+   without needing dark: variants everywhere.
+═══════════════════════════════════════ */
+
+/* Text colors */
+.dark .text-gray-900 { color: #f1f5f9 !important; }
+.dark .text-gray-800 { color: #e2e8f0 !important; }
+.dark .text-gray-700 { color: #cbd5e1 !important; }
+.dark .text-gray-600 { color: #94a3b8 !important; }
+.dark .text-gray-500 { color: #64748b !important; }
+.dark .text-gray-400 { color: #475569 !important; }
+.dark .text-gray-300 { color: #334155 !important; }
+.dark .text-gray-200 { color: #1e293b !important; }
+
+/* Background colors */
+.dark .bg-gray-50  { background-color: #1a2540 !important; }
+.dark .bg-gray-100 { background-color: #1e2d45 !important; }
+.dark .bg-gray-200 { background-color: #243050 !important; }
+.dark .bg-gray-300 { background-color: #2d3d60 !important; }
+.dark .bg-gray-400 { background-color: #3d5070 !important; }
+
+/* Border colors */
+.dark .border-gray-50  { border-color: rgba(255,255,255,0.04) !important; }
+.dark .border-gray-100 { border-color: rgba(255,255,255,0.06) !important; }
+.dark .border-gray-200 { border-color: rgba(255,255,255,0.09) !important; }
+.dark .border-gray-300 { border-color: rgba(255,255,255,0.12) !important; }
+
+/* Divide colors (table rows etc) */
+.dark .divide-gray-50  > * + * { border-color: rgba(255,255,255,0.04) !important; }
+.dark .divide-gray-100 > * + * { border-color: rgba(255,255,255,0.06) !important; }
+
+/* Hover variants */
+.dark .hover\:bg-gray-50:hover  { background-color: rgba(255,255,255,0.04) !important; }
+.dark .hover\:bg-gray-100:hover { background-color: rgba(255,255,255,0.07) !important; }
+
+/* Emerald / status: keep as-is in dark (they're semantic) but lighten slightly */
+.dark .bg-emerald-50   { background-color: rgba(16,185,129,0.12) !important; }
+.dark .text-emerald-700 { color: #34d399 !important; }
+.dark .bg-orange-50    { background-color: rgba(249,115,22,0.12) !important; }
+.dark .bg-violet-50    { background-color: rgba(139,92,246,0.12) !important; }
+.dark .text-violet-500 { color: #a78bfa !important; }
+.dark .bg-blue-50      { background-color: rgba(59,130,246,0.1)  !important; }
+.dark .text-blue-900   { color: #bfdbfe !important; }
+.dark .text-blue-700   { color: #93c5fd !important; }
+.dark .text-blue-500   { color: #60a5fa !important; }
+.dark .border-blue-200 { border-color: rgba(59,130,246,0.25) !important; }
+
+/* Success/danger semantic */
+.dark .bg-success-50, .dark .bg-green-50  { background-color: rgba(16,185,129,0.1)  !important; }
+.dark .bg-danger-50,  .dark .bg-red-50    { background-color: rgba(239,68,68,0.1)   !important; }
+.dark .text-danger-600 { color: #f87171 !important; }
+.dark .border-danger-200 { border-color: rgba(239,68,68,0.2) !important; }
+
+/* White backgrounds on cards / inputs become dark surface */
+.dark .bg-white { background-color: var(--bg-card) !important; }
+
+/* Group hover fix for sidebar links */
+.dark .group:hover .group-hover\:text-primary-600 { color: var(--sidebar-active-text) !important; }
+
+/* ═══════════════════════════════════════
+   REMAINING DARK MODE OVERRIDES
+═══════════════════════════════════════ */
+
+/* Login / Register inline input fields */
+.dark input.bg-white, .dark textarea.bg-white {
+  background-color: var(--bg-input) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+/* Any leftover bg-white cards/panels */
+.dark .card.bg-white, .dark [class*="bg-white"]:not([class*="bg-white/"]):not([class*="text-white"]) {
+  background-color: var(--bg-card) !important;
+}
+
+/* Indigo overrides → teal brand */
+.dark .border-indigo-100  { border-color: rgba(20,184,166,0.15) !important; }
+.dark .border-indigo-300  { border-color: rgba(20,184,166,0.3)  !important; }
+.dark .bg-indigo-100      { background-color: rgba(20,184,166,0.12) !important; }
+.dark .text-indigo-500    { color: #2dd4bf !important; }
+.dark .text-indigo-800    { color: #99f6e4 !important; }
+.dark .bg-indigo-500      { background-color: #0d9488 !important; }
+.dark .bg-primary-50      { background-color: rgba(20,184,166,0.07) !important; }
+.dark .border-primary-100 { border-color: rgba(20,184,166,0.15)     !important; }
+
+/* Leaderboard row */
+.dark .bg-white.border-gray-100 { 
+  background-color: var(--bg-card) !important; 
+  border-color: var(--border) !important; 
+}
+
+/* Portfolio action hover */
+.dark .hover\:bg-white:hover { background-color: var(--bg-card) !important; }
+
+/* Learn page start button */
+.dark .hover\:bg-indigo-700:hover { background-color: #0d9488 !important; }
