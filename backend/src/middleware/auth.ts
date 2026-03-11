@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
 import { errorResponse } from '../utils/helpers';
 
 export interface JwtPayload {
@@ -11,12 +11,15 @@ export interface AuthenticatedRequest extends Request {
   user?: JwtPayload;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-change-in-production';
+// const JWT_SECRET = process.env.JWT_SECRET as string;
 
 // Generate JWT token
+
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
 export function generateToken(payload: JwtPayload): string {
   return jwt.sign(payload, JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    expiresIn: "7d",
   });
 }
 

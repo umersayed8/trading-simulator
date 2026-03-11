@@ -133,7 +133,7 @@ export async function buyStock(
     }
     
     // Check balance
-    if (portfolio.balance < total) {
+    if (Number(portfolio.balance) < total) {
       return { success: false, message: 'Insufficient balance' };
     }
     
