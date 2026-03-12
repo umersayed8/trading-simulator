@@ -376,7 +376,7 @@ const lessons = [
   }),
 ];
 
-async function seed() {
+export async function seed() {
   const connection = await mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT || '3306'),

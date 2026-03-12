@@ -10,13 +10,14 @@ import {
 import { TradeSkeleton, StockDetailSkeleton } from '../components/ui/Skeleton';
 import { MascotEmpty } from '../components/mascot/Mascot';
 import { FlameIcon } from '../components/gamification/GamificationUI';
+import { Element, scroller } from "react-scroll";
 
 interface StockQuote {
   symbol: string; name: string; price: number;
   change: number; changePercent: number;
   dayHigh: number; dayLow: number; volume: number; previousClose: number;
 }
-interface SearchResult   { symbol: string; name: string; exchange: string; }
+interface SearchResult { symbol: string; name: string; exchange: string; }
 interface RecommendedStock { symbol: string; name: string; price: number; changePercent: number; change: number; }
 interface Insight {
   stockId: string; stockName: string; label: string;
@@ -24,9 +25,9 @@ interface Insight {
 }
 interface InsightsData { insights: Insight[]; staticTips: string[]; }
 
-const UP_COLOR   = '#10b981';
+const UP_COLOR = '#10b981';
 const DOWN_COLOR = '#ef4444';
-const PERIODS    = ['1d', '5d', '1mo', '3mo', '6mo', '1y'] as const;
+const PERIODS = ['1d', '5d', '1mo', '3mo', '6mo', '1y'] as const;
 
 // ─── Synthetic history fallback ───────────────────────────────────────────────
 // When the API returns no data for a given period, generate plausible-looking
@@ -50,7 +51,7 @@ function makeSyntheticHistory(basePrice: number, period: string): Array<{ date: 
     const change = price * ((-0.015) + Math.random() * 0.03);
     price = Math.max(price + change, 1);
     result.push({
-      date:  d.toISOString().slice(0, 10),
+      date: d.toISOString().slice(0, 10),
       close: parseFloat(price.toFixed(2)),
     });
   }
@@ -63,34 +64,34 @@ export default function Trade() {
   const { symbol: urlSymbol } = useParams();
   const navigate = useNavigate();
 
-  const [searchQuery,   setSearchQuery]   = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [selectedStock, setSelectedStock] = useState<StockQuote | null>(null);
-  const [chartData,     setChartData]     = useState<any[]>([]);
-  const [period,        setPeriod]        = useState<string>('1y');
+  const [chartData, setChartData] = useState<any[]>([]);
+  const [period, setPeriod] = useState<string>('1y');
   const [initialLoading, setInitialLoading] = useState(true);
-  const [stockLoading,   setStockLoading]   = useState(false);
+  const [stockLoading, setStockLoading] = useState(false);
   const [chartUsingSynthetic, setChartUsingSynthetic] = useState(false);
 
-  const [orderType,    setOrderType]    = useState<'BUY' | 'SELL'>('BUY');
-  const [quantity,     setQuantity]     = useState(1);
+  const [orderType, setOrderType] = useState<'BUY' | 'SELL'>('BUY');
+  const [quantity, setQuantity] = useState(1);
   const [orderLoading, setOrderLoading] = useState(false);
-  const [message,      setMessage]      = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const [watchlist,  setWatchlist]  = useState<string[]>([]);
-  const [balance,    setBalance]    = useState(100000);
-  const [holdings,   setHoldings]   = useState<any[]>([]);
+  const [watchlist, setWatchlist] = useState<string[]>([]);
+  const [balance, setBalance] = useState(100000);
+  const [holdings, setHoldings] = useState<any[]>([]);
 
-  const [recommended,     setRecommended]     = useState<RecommendedStock[]>([]);
-  const [insightsData,    setInsightsData]    = useState<InsightsData | null>(null);
+  const [recommended, setRecommended] = useState<RecommendedStock[]>([]);
+  const [insightsData, setInsightsData] = useState<InsightsData | null>(null);
   const [insightsLoading, setInsightsLoading] = useState(false);
-  const [recLoading,      setRecLoading]      = useState(false);
-  const [tipIndex,        setTipIndex]        = useState(0);
+  const [recLoading, setRecLoading] = useState(false);
+  const [tipIndex, setTipIndex] = useState(0);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const chartRef          = useRef<IChartApi | null>(null);
-  const seriesRef         = useRef<ISeriesApi<'Area'> | null>(null);
-  const isDark            = document.documentElement.classList.contains('dark');
+  const chartRef = useRef<IChartApi | null>(null);
+  const seriesRef = useRef<ISeriesApi<'Area'> | null>(null);
+  const isDark = document.documentElement.classList.contains('dark');
 
   // ─── Init ───────────────────────────────────────────────────────────────
 
@@ -101,7 +102,7 @@ export default function Trade() {
         setWatchlist(wl.data.data.map((w: any) => w.symbol));
         setBalance(pf.data.data.balance);
         setHoldings(pf.data.data.holdings);
-      } catch {}
+      } catch { }
       finally { setInitialLoading(false); }
     })();
     fetchRecommended();
@@ -132,17 +133,17 @@ export default function Trade() {
   function getChartColors() {
     const dark = document.documentElement.classList.contains('dark');
     return {
-      bg:     dark ? '#131d2e' : '#ffffff',
-      text:   dark ? '#94a3b8' : '#64748b',
-      grid:   dark ? 'rgba(255,255,255,0.05)' : '#f1f5f9',
+      bg: dark ? '#131d2e' : '#ffffff',
+      text: dark ? '#94a3b8' : '#64748b',
+      grid: dark ? 'rgba(255,255,255,0.05)' : '#f1f5f9',
       border: dark ? 'rgba(255,255,255,0.08)' : '#e2e8f0',
     };
   }
 
   const initChart = useCallback((node: HTMLDivElement | null) => {
     if (chartRef.current) {
-      try { chartRef.current.remove(); } catch {}
-      chartRef.current  = null;
+      try { chartRef.current.remove(); } catch { }
+      chartRef.current = null;
       seriesRef.current = null;
     }
     if (!node) return;
@@ -150,34 +151,34 @@ export default function Trade() {
     const c = getChartColors();
     const chart = createChart(node, {
       layout: {
-        background:  { type: ColorType.Solid, color: c.bg },
-        textColor:   c.text,
-        fontFamily:  "'DM Sans', system-ui, sans-serif",
+        background: { type: ColorType.Solid, color: c.bg },
+        textColor: c.text,
+        fontFamily: "'DM Sans', system-ui, sans-serif",
       },
       grid: {
         vertLines: { color: c.grid },
         horzLines: { color: c.grid },
       },
       rightPriceScale: { borderColor: c.border },
-      timeScale:       { borderColor: c.border, timeVisible: true },
+      timeScale: { borderColor: c.border, timeVisible: true },
       crosshair: { mode: CrosshairMode.Normal },
       handleScroll: { mouseWheel: true, pressedMouseMove: true },
-      handleScale:  { mouseWheel: true, pinch: true },
-      width:  node.clientWidth  || 600,
+      handleScale: { mouseWheel: true, pinch: true },
+      width: node.clientWidth || 600,
       height: 320,
     });
 
     // Area series for a cleaner fintech look
     const area = chart.addAreaSeries({
-      lineColor:        UP_COLOR,
-      topColor:         'rgba(16,185,129,0.2)',
-      bottomColor:      'rgba(16,185,129,0)',
-      lineWidth:        2,
+      lineColor: UP_COLOR,
+      topColor: 'rgba(16,185,129,0.2)',
+      bottomColor: 'rgba(16,185,129,0)',
+      lineWidth: 2,
       crosshairMarkerVisible: true,
       priceLineVisible: false,
     });
 
-    chartRef.current  = chart;
+    chartRef.current = chart;
     seriesRef.current = area as any;
 
     const ro = new ResizeObserver(entries => {
@@ -190,8 +191,8 @@ export default function Trade() {
 
     (node as any).__chartCleanup = () => {
       ro.disconnect();
-      try { chart.remove(); } catch {}
-      chartRef.current  = null;
+      try { chart.remove(); } catch { }
+      chartRef.current = null;
       seriesRef.current = null;
     };
   }, []); // eslint-disable-line
@@ -234,14 +235,14 @@ export default function Trade() {
     if (!formatted.length) return;
 
     const first = formatted[0].value;
-    const last  = formatted[formatted.length - 1].value;
-    const isUp  = last >= first;
+    const last = formatted[formatted.length - 1].value;
+    const isUp = last >= first;
 
     try {
       (series as any).applyOptions({
-        lineColor:   isUp ? UP_COLOR : DOWN_COLOR,
-        topColor:    isUp ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
-        bottomColor: isUp ? 'rgba(16,185,129,0)'   : 'rgba(239,68,68,0)',
+        lineColor: isUp ? UP_COLOR : DOWN_COLOR,
+        topColor: isUp ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
+        bottomColor: isUp ? 'rgba(16,185,129,0)' : 'rgba(239,68,68,0)',
       });
       series.setData(formatted as any);
       chart.timeScale().fitContent();
@@ -254,13 +255,13 @@ export default function Trade() {
 
   const fetchRecommended = async () => {
     setRecLoading(true);
-    try { setRecommended((await tradingApi.getRecommended()).data.data ?? []); } catch {}
+    try { setRecommended((await tradingApi.getRecommended()).data.data ?? []); } catch { }
     finally { setRecLoading(false); }
   };
 
   const fetchInsights = async () => {
     setInsightsLoading(true);
-    try { setInsightsData((await tradingApi.getInsights()).data.data); } catch {}
+    try { setInsightsData((await tradingApi.getInsights()).data.data); } catch { }
     finally { setInsightsLoading(false); }
   };
 
@@ -297,14 +298,14 @@ export default function Trade() {
     if (!selectedStock) return;
     setChartUsingSynthetic(false);
     try {
-      const res     = await tradingApi.getHistory(selectedStock.symbol, p);
+      const res = await tradingApi.getHistory(selectedStock.symbol, p);
       let history: any[] = res.data.data?.history ?? [];
       if (history.length < 2 && selectedStock.price > 0) {
         history = makeSyntheticHistory(selectedStock.price, p);
         setChartUsingSynthetic(true);
       }
       setChartData(history);
-    } catch {}
+    } catch { }
   };
 
   const handleOrder = async () => {
@@ -334,21 +335,21 @@ export default function Trade() {
         await portfolioApi.addToWatchlist(selectedStock.symbol);
         setWatchlist(w => [...w, selectedStock.symbol]);
       }
-    } catch {}
+    } catch { }
   };
 
-  const fmt  = (v: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v);
+  const fmt = (v: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v);
   const fmt2 = (v: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(v);
   const fmtN = (v: number) => new Intl.NumberFormat('en-IN').format(v);
 
   const currentHolding = selectedStock ? holdings.find((h: any) => h.symbol === selectedStock.symbol) : null;
-  const orderTotal     = selectedStock ? selectedStock.price * quantity : 0;
-  const canBuy         = orderType === 'BUY'  && orderTotal <= balance;
-  const canSell        = orderType === 'SELL' && currentHolding && currentHolding.quantity >= quantity;
+  const orderTotal = selectedStock ? selectedStock.price * quantity : 0;
+  const canBuy = orderType === 'BUY' && orderTotal <= balance;
+  const canSell = orderType === 'SELL' && currentHolding && currentHolding.quantity >= quantity;
 
   const insightBadge = (label: string) =>
     ['Strong Buy', 'Outperform'].includes(label) ? 'badge-success' :
-    label === 'Hold'                              ? 'badge-warning'  : 'badge-danger';
+      label === 'Hold' ? 'badge-warning' : 'badge-danger';
 
   // ─── Render ──────────────────────────────────────────────────────────────
 
@@ -367,11 +368,10 @@ export default function Trade() {
       {/* Message toast */}
       {message && (
         <div
-          className={`flex items-start justify-between gap-3 px-4 py-3 rounded-xl text-sm font-medium animate-fade-down ${
-            message.type === 'success'
-              ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300'
-              : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300'
-          }`}
+          className={`flex items-start justify-between gap-3 px-4 py-3 rounded-xl text-sm font-medium animate-fade-down ${message.type === 'success'
+            ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300'
+            : 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-300'
+            }`}
         >
           <span>{message.text}</span>
           <button onClick={() => setMessage(null)} className="shrink-0"><X className="w-4 h-4" /></button>
@@ -421,29 +421,34 @@ export default function Trade() {
             </button>
           )}
         </div>
-        {searchResults.length > 0 && (
-          <div
-            className="mt-2 rounded-xl overflow-hidden divide-y animate-fade-down"
-            style={{ border: '1px solid var(--border)', divideColor: 'var(--border)' }}
+        {searchResults.map(r => (
+          <button
+            key={r.symbol}
+            onClick={() => {
+              // 1. Load data and navigate
+              loadStock(r.symbol);
+              navigate(`/trade/${r.symbol}`);
+
+              // 2. Trigger smooth scroll to the Element named 'TradeLoad'
+              scroller.scrollTo('TradeLoad', {
+                duration: 800,
+                delay: 0,
+                smooth: 'easeInOutQuart',
+                offset: -20, // Adjust this based on your header height
+              });
+            }}
+            className="w-full flex items-center justify-between p-3 text-left transition-colors"
+            style={{ background: 'var(--bg-card)' }}
+            onMouseEnter={e => (e.currentTarget.style.background = 'var(--sidebar-hover-bg)')}
+            onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg-card)')}
           >
-            {searchResults.map(r => (
-              <button
-                key={r.symbol}
-                onClick={() => { loadStock(r.symbol); navigate(`/trade/${r.symbol}`); }}
-                className="w-full flex items-center justify-between p-3 text-left transition-colors"
-                style={{ background: 'var(--bg-card)' }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'var(--sidebar-hover-bg)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg-card)')}
-              >
-                <div>
-                  <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{r.symbol}</p>
-                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{r.name}</p>
-                </div>
-                <span className="badge-neutral">{r.exchange}</span>
-              </button>
-            ))}
-          </div>
-        )}
+            <div>
+              <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{r.symbol}</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{r.name}</p>
+            </div>
+            <span className="badge-neutral">{r.exchange}</span>
+          </button>
+        ))}
       </div>
 
       {/* Trending Stocks */}
@@ -481,7 +486,16 @@ export default function Trade() {
             {recommended.slice(0, 8).map((stock, i) => (
               <button
                 key={stock.symbol}
-                onClick={() => { loadStock(stock.symbol); navigate(`/trade/${stock.symbol}`); }}
+                onClick={() => {
+                  loadStock(stock.symbol); 
+                  navigate(`/trade/${stock.symbol}`);  // 2. Trigger smooth scroll to the Element named 'TradeLoad'
+                  scroller.scrollTo('TradeLoad', {
+                    duration: 800,
+                    delay: 0,
+                    smooth: 'easeInOutQuart',
+                    offset: -20, // Adjust this based on your header height
+                  });
+                }}
                 className="p-3 rounded-xl text-left transition-all group animate-fade-up"
                 style={{
                   border: '1px solid var(--border)',
@@ -490,13 +504,13 @@ export default function Trade() {
                 }}
                 onMouseEnter={e => {
                   (e.currentTarget as HTMLElement).style.borderColor = 'rgba(20,184,166,0.4)';
-                  (e.currentTarget as HTMLElement).style.boxShadow   = '0 4px 16px -4px rgba(20,184,166,0.2)';
-                  (e.currentTarget as HTMLElement).style.transform   = 'translateY(-1px)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 16px -4px rgba(20,184,166,0.2)';
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)';
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLElement).style.borderColor = 'var(--border)';
-                  (e.currentTarget as HTMLElement).style.boxShadow   = 'none';
-                  (e.currentTarget as HTMLElement).style.transform   = 'translateY(0)';
+                  (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(0)';
                 }}
               >
                 <div className="flex items-start justify-between mb-2">
@@ -509,7 +523,7 @@ export default function Trade() {
                     </p>
                   </div>
                   {stock.changePercent >= 0
-                    ? <TrendingUp  className="w-4 h-4 text-up shrink-0 ml-1" />
+                    ? <TrendingUp className="w-4 h-4 text-up shrink-0 ml-1" />
                     : <TrendingDown className="w-4 h-4 text-down shrink-0 ml-1" />}
                 </div>
                 <p className="text-sm font-bold font-mono" style={{ color: 'var(--text-primary)' }}>
@@ -566,213 +580,214 @@ export default function Trade() {
 
       {/* Stock Detail */}
       {selectedStock && !stockLoading && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 animate-fade-up">
+        <Element name='TradeLoad'>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 animate-fade-up">
 
-          {/* ── Left: Chart & Stats ── */}
-          <div className="lg:col-span-2 space-y-4">
-            <div className="card">
+            {/* ── Left: Chart & Stats ── */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="card">
 
-              {/* Stock header */}
-              <div className="flex items-start justify-between mb-5">
-                <div>
-                  <div className="flex items-center gap-2.5">
-                    <h2 className="text-2xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>
-                      {selectedStock.symbol}
-                    </h2>
-                    <button
-                      onClick={toggleWatchlist}
-                      className="p-1.5 rounded-lg transition-all hover:scale-110"
-                      title={watchlist.includes(selectedStock.symbol) ? 'Remove from watchlist' : 'Add to watchlist'}
-                    >
-                      {watchlist.includes(selectedStock.symbol)
-                        ? <Star    className="w-5 h-5 text-accent-500 fill-accent-500" />
-                        : <StarOff className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />}
-                    </button>
+                {/* Stock header */}
+                <div className="flex items-start justify-between mb-5">
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <h2 className="text-2xl font-display font-bold" style={{ color: 'var(--text-primary)' }}>
+                        {selectedStock.symbol}
+                      </h2>
+                      <button
+                        onClick={toggleWatchlist}
+                        className="p-1.5 rounded-lg transition-all hover:scale-110"
+                        title={watchlist.includes(selectedStock.symbol) ? 'Remove from watchlist' : 'Add to watchlist'}
+                      >
+                        {watchlist.includes(selectedStock.symbol)
+                          ? <Star className="w-5 h-5 text-accent-500 fill-accent-500" />
+                          : <StarOff className="w-5 h-5" style={{ color: 'var(--text-muted)' }} />}
+                      </button>
+                    </div>
+                    <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{selectedStock.name}</p>
                   </div>
-                  <p className="text-sm mt-0.5" style={{ color: 'var(--text-muted)' }}>{selectedStock.name}</p>
+                  <div className="text-right">
+                    <p className="text-3xl font-display font-bold font-mono" style={{ color: 'var(--text-primary)' }}>
+                      {fmt2(selectedStock.price)}
+                    </p>
+                    <p className={`flex items-center justify-end gap-1 text-sm font-semibold ${selectedStock.change >= 0 ? 'text-up' : 'text-down'
+                      }`}>
+                      {selectedStock.change >= 0
+                        ? <TrendingUp className="w-4 h-4" />
+                        : <TrendingDown className="w-4 h-4" />}
+                      {selectedStock.change >= 0 ? '+' : ''}
+                      {selectedStock.change.toFixed(2)} ({selectedStock.changePercent.toFixed(2)}%)
+                    </p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-3xl font-display font-bold font-mono" style={{ color: 'var(--text-primary)' }}>
-                    {fmt2(selectedStock.price)}
-                  </p>
-                  <p className={`flex items-center justify-end gap-1 text-sm font-semibold ${
-                    selectedStock.change >= 0 ? 'text-up' : 'text-down'
-                  }`}>
-                    {selectedStock.change >= 0
-                      ? <TrendingUp className="w-4 h-4" />
-                      : <TrendingDown className="w-4 h-4" />}
-                    {selectedStock.change >= 0 ? '+' : ''}
-                    {selectedStock.change.toFixed(2)} ({selectedStock.changePercent.toFixed(2)}%)
-                  </p>
+
+                {/* Period selector */}
+                <div className="flex gap-1.5 mb-4 p-1 rounded-xl w-fit" style={{ background: 'var(--bg-page)' }}>
+                  {PERIODS.map(p => (
+                    <button
+                      key={p}
+                      onClick={() => handlePeriodChange(p)}
+                      className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                      style={{
+                        background: period === p ? 'var(--bg-card)' : 'transparent',
+                        color: period === p ? 'var(--sidebar-active-text)' : 'var(--text-muted)',
+                        boxShadow: period === p ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      }}
+                    >
+                      {p.toUpperCase()}
+                    </button>
+                  ))}
                 </div>
+
+                {/* Chart */}
+                <div ref={chartContainerCb} className="w-full rounded-xl overflow-hidden" style={{ height: 320 }} />
+
+                {/* Synthetic data disclaimer */}
+                {chartUsingSynthetic && (
+                  <div className="flex items-center gap-2 mt-3 px-3 py-2 rounded-lg text-xs"
+                    style={{ background: 'rgba(245,158,11,0.08)', color: 'var(--text-muted)', border: '1px solid rgba(245,158,11,0.15)' }}>
+                    <AlertCircle className="w-3.5 h-3.5 text-accent-500 shrink-0" />
+                    Chart shows simulated data — live historical data unavailable for this stock.
+                  </div>
+                )}
               </div>
 
-              {/* Period selector */}
-              <div className="flex gap-1.5 mb-4 p-1 rounded-xl w-fit" style={{ background: 'var(--bg-page)' }}>
-                {PERIODS.map(p => (
+              {/* Stats row */}
+              <div className="card grid grid-cols-2 md:grid-cols-4 gap-5">
+                {[
+                  { label: 'Day High', val: fmt2(selectedStock.dayHigh), icon: <TrendingUp className="w-3.5 h-3.5 text-up" /> },
+                  { label: 'Day Low', val: fmt2(selectedStock.dayLow), icon: <TrendingDown className="w-3.5 h-3.5 text-down" /> },
+                  { label: 'Prev Close', val: fmt2(selectedStock.previousClose), icon: <BarChart2 className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /> },
+                  { label: 'Volume', val: fmtN(selectedStock.volume), icon: <ChevronDown className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /> },
+                ].map(({ label, val, icon }) => (
+                  <div key={label}>
+                    <div className="flex items-center gap-1.5 mb-1">
+                      {icon}
+                      <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>{label}</p>
+                    </div>
+                    <p className="font-semibold font-mono text-sm" style={{ color: 'var(--text-primary)' }}>{val}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* ── Right: Order Panel ── */}
+            <div
+              className="h-fit rounded-2xl p-5 space-y-4"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            >
+              <h3 className="font-display font-semibold" style={{ color: 'var(--text-primary)' }}>Place Order</h3>
+
+              {/* Balance */}
+              <div className="rounded-xl px-4 py-3" style={{ background: 'var(--bg-page)' }}>
+                <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Available Balance</p>
+                <p className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--text-primary)' }}>
+                  {fmt(balance)}
+                </p>
+              </div>
+
+              {/* Holdings badge */}
+              {currentHolding && (
+                <div className="rounded-xl px-4 py-3 bg-primary-50 dark:bg-primary-900/20">
+                  <p className="text-xs font-medium text-primary-600 dark:text-primary-400">You own</p>
+                  <p className="text-xl font-bold text-primary-700 dark:text-primary-300 mt-0.5">
+                    {currentHolding.quantity} shares
+                  </p>
+                </div>
+              )}
+
+              {/* Buy / Sell toggle */}
+              <div className="grid grid-cols-2 gap-2">
+                {(['BUY', 'SELL'] as const).map(t => (
                   <button
-                    key={p}
-                    onClick={() => handlePeriodChange(p)}
-                    className="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                    key={t}
+                    onClick={() => setOrderType(t)}
+                    className="py-2.5 rounded-xl font-semibold text-sm transition-all"
                     style={{
-                      background: period === p ? 'var(--bg-card)' : 'transparent',
-                      color: period === p ? 'var(--sidebar-active-text)' : 'var(--text-muted)',
-                      boxShadow: period === p ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      background: orderType === t
+                        ? t === 'BUY' ? '#10b981' : '#ef4444'
+                        : 'var(--bg-page)',
+                      color: orderType === t ? 'white' : 'var(--text-secondary)',
+                      border: `1.5px solid ${orderType === t ? 'transparent' : 'var(--border)'}`,
                     }}
                   >
-                    {p.toUpperCase()}
+                    {t === 'BUY' ? 'Buy' : 'Sell'}
                   </button>
                 ))}
               </div>
 
-              {/* Chart */}
-              <div ref={chartContainerCb} className="w-full rounded-xl overflow-hidden" style={{ height: 320 }} />
-
-              {/* Synthetic data disclaimer */}
-              {chartUsingSynthetic && (
-                <div className="flex items-center gap-2 mt-3 px-3 py-2 rounded-lg text-xs"
-                     style={{ background: 'rgba(245,158,11,0.08)', color: 'var(--text-muted)', border: '1px solid rgba(245,158,11,0.15)' }}>
-                  <AlertCircle className="w-3.5 h-3.5 text-accent-500 shrink-0" />
-                  Chart shows simulated data — live historical data unavailable for this stock.
+              {/* Quantity */}
+              <div>
+                <label className="label">Quantity</label>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+                    style={{ background: 'var(--bg-page)', border: '1px solid var(--border)' }}
+                  >
+                    <Minus className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
+                  </button>
+                  <input
+                    type="number" value={quantity} min="1"
+                    onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="input text-center flex-1 font-mono font-semibold"
+                  />
+                  <button
+                    onClick={() => setQuantity(q => q + 1)}
+                    className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
+                    style={{ background: 'var(--bg-page)', border: '1px solid var(--border)' }}
+                  >
+                    <Plus className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
 
-            {/* Stats row */}
-            <div className="card grid grid-cols-2 md:grid-cols-4 gap-5">
-              {[
-                { label: 'Day High',       val: fmt2(selectedStock.dayHigh),       icon: <TrendingUp  className="w-3.5 h-3.5 text-up" />    },
-                { label: 'Day Low',        val: fmt2(selectedStock.dayLow),        icon: <TrendingDown className="w-3.5 h-3.5 text-down" />  },
-                { label: 'Prev Close',     val: fmt2(selectedStock.previousClose), icon: <BarChart2    className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /> },
-                { label: 'Volume',         val: fmtN(selectedStock.volume),        icon: <ChevronDown  className="w-3.5 h-3.5" style={{ color: 'var(--text-muted)' }} /> },
-              ].map(({ label, val, icon }) => (
-                <div key={label}>
-                  <div className="flex items-center gap-1.5 mb-1">
-                    {icon}
-                    <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>{label}</p>
+              {/* Summary */}
+              <div className="space-y-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
+                {[
+                  { label: 'Price per share', val: fmt2(selectedStock.price) },
+                  { label: 'Quantity', val: quantity.toString() },
+                ].map(({ label, val }) => (
+                  <div key={label} className="flex justify-between text-sm">
+                    <span style={{ color: 'var(--text-muted)' }}>{label}</span>
+                    <span className="font-mono font-medium" style={{ color: 'var(--text-secondary)' }}>{val}</span>
                   </div>
-                  <p className="font-semibold font-mono text-sm" style={{ color: 'var(--text-primary)' }}>{val}</p>
+                ))}
+                <div className="flex justify-between text-base font-bold pt-1">
+                  <span style={{ color: 'var(--text-primary)' }}>Total</span>
+                  <span className="font-mono" style={{ color: 'var(--text-primary)' }}>{fmt2(orderTotal)}</span>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── Right: Order Panel ── */}
-          <div
-            className="h-fit rounded-2xl p-5 space-y-4"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
-          >
-            <h3 className="font-display font-semibold" style={{ color: 'var(--text-primary)' }}>Place Order</h3>
-
-            {/* Balance */}
-            <div className="rounded-xl px-4 py-3" style={{ background: 'var(--bg-page)' }}>
-              <p className="text-xs font-medium" style={{ color: 'var(--text-muted)' }}>Available Balance</p>
-              <p className="text-xl font-bold font-mono mt-0.5" style={{ color: 'var(--text-primary)' }}>
-                {fmt(balance)}
-              </p>
-            </div>
-
-            {/* Holdings badge */}
-            {currentHolding && (
-              <div className="rounded-xl px-4 py-3 bg-primary-50 dark:bg-primary-900/20">
-                <p className="text-xs font-medium text-primary-600 dark:text-primary-400">You own</p>
-                <p className="text-xl font-bold text-primary-700 dark:text-primary-300 mt-0.5">
-                  {currentHolding.quantity} shares
-                </p>
               </div>
-            )}
 
-            {/* Buy / Sell toggle */}
-            <div className="grid grid-cols-2 gap-2">
-              {(['BUY', 'SELL'] as const).map(t => (
-                <button
-                  key={t}
-                  onClick={() => setOrderType(t)}
-                  className="py-2.5 rounded-xl font-semibold text-sm transition-all"
-                  style={{
-                    background: orderType === t
-                      ? t === 'BUY' ? '#10b981' : '#ef4444'
-                      : 'var(--bg-page)',
-                    color: orderType === t ? 'white' : 'var(--text-secondary)',
-                    border: `1.5px solid ${orderType === t ? 'transparent' : 'var(--border)'}`,
-                  }}
-                >
-                  {t === 'BUY' ? 'Buy' : 'Sell'}
-                </button>
-              ))}
-            </div>
-
-            {/* Quantity */}
-            <div>
-              <label className="label">Quantity</label>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
-                  style={{ background: 'var(--bg-page)', border: '1px solid var(--border)' }}
-                >
-                  <Minus className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                </button>
-                <input
-                  type="number" value={quantity} min="1"
-                  onChange={e => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="input text-center flex-1 font-mono font-semibold"
-                />
-                <button
-                  onClick={() => setQuantity(q => q + 1)}
-                  className="w-10 h-10 rounded-xl flex items-center justify-center transition-colors"
-                  style={{ background: 'var(--bg-page)', border: '1px solid var(--border)' }}
-                >
-                  <Plus className="w-4 h-4" style={{ color: 'var(--text-secondary)' }} />
-                </button>
-              </div>
-            </div>
-
-            {/* Summary */}
-            <div className="space-y-2 pt-3" style={{ borderTop: '1px solid var(--border)' }}>
-              {[
-                { label: 'Price per share', val: fmt2(selectedStock.price) },
-                { label: 'Quantity',        val: quantity.toString() },
-              ].map(({ label, val }) => (
-                <div key={label} className="flex justify-between text-sm">
-                  <span style={{ color: 'var(--text-muted)' }}>{label}</span>
-                  <span className="font-mono font-medium" style={{ color: 'var(--text-secondary)' }}>{val}</span>
-                </div>
-              ))}
-              <div className="flex justify-between text-base font-bold pt-1">
-                <span style={{ color: 'var(--text-primary)' }}>Total</span>
-                <span className="font-mono" style={{ color: 'var(--text-primary)' }}>{fmt2(orderTotal)}</span>
-              </div>
-            </div>
-
-            {/* Submit */}
-            <button
-              onClick={handleOrder}
-              disabled={orderLoading || (orderType === 'BUY' ? !canBuy : !canSell)}
-              className="w-full py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-98"
-              style={{
-                background: orderType === 'BUY' ? '#10b981' : '#ef4444',
-                color: 'white',
-              }}
-            >
-              {orderLoading
-                ? <span className="flex items-center justify-center gap-2">
+              {/* Submit */}
+              <button
+                onClick={handleOrder}
+                disabled={orderLoading || (orderType === 'BUY' ? !canBuy : !canSell)}
+                className="w-full py-3 rounded-xl font-semibold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed active:scale-98"
+                style={{
+                  background: orderType === 'BUY' ? '#10b981' : '#ef4444',
+                  color: 'white',
+                }}
+              >
+                {orderLoading
+                  ? <span className="flex items-center justify-center gap-2">
                     <Loader2 className="w-4 h-4 animate-spin" />
                     Processing…
                   </span>
-                : `${orderType} ${quantity} Share${quantity > 1 ? 's' : ''}`}
-            </button>
+                  : `${orderType} ${quantity} Share${quantity > 1 ? 's' : ''}`}
+              </button>
 
-            {orderType === 'BUY'  && !canBuy  && (
-              <p className="text-xs text-down text-center">Insufficient balance</p>
-            )}
-            {orderType === 'SELL' && !canSell && (
-              <p className="text-xs text-down text-center">
-                {currentHolding ? 'Insufficient shares' : "You don't own this stock"}
-              </p>
-            )}
+              {orderType === 'BUY' && !canBuy && (
+                <p className="text-xs text-down text-center">Insufficient balance</p>
+              )}
+              {orderType === 'SELL' && !canSell && (
+                <p className="text-xs text-down text-center">
+                  {currentHolding ? 'Insufficient shares' : "You don't own this stock"}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        </Element>
       )}
 
       {/* Empty state */}

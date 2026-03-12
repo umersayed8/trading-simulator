@@ -15,6 +15,7 @@ import portfolioRoutes from './routes/portfolio';
 import gamificationRoutes from './routes/gamification';
 import algoRoutes from './routes/algo';
 import learningRoutes from './routes/learning';
+import { seed } from './scripts/seed';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -110,6 +111,8 @@ async function startServer() {
   app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+  await seed();
 }
 
 startServer();
