@@ -139,7 +139,7 @@ export default function LessonView() {
 
       {/* ── Toasts & Popups ── */}
       {xpToast          && <XPToast xp={xpToast.xp} message={xpToast.msg} onDone={() => setXpToast(null)} />}
-      {levelUpData      && <LevelUpPopup newLevel={levelUpData.newLevel} onClose={() => setLevelUpData(null)} />}
+      {levelUpData      && <LevelUpPopup newLevel={levelUpData.newLevel} onDone={() => setLevelUpData(null)} />}
       {achievementQueue.length > 0 && (
         <AchievementPopup
           achievement={achievementQueue[0]}

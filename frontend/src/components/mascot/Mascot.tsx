@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 /* ═══════════════════════════════════════════
-   KUMA — Plushie bear cub mascot
+   ZARA — Plushie bear cub mascot
    Moods: idle | thinking | happy | excited | warning | celebrating
 ════════════════════════════════════════════ */
 
@@ -233,7 +233,7 @@ interface MascotSpeechProps {
   size?: number;
 }
 
-export function MascotSpeech({ message, mood = 'idle', name = 'Kuma', size = 90 }: MascotSpeechProps) {
+export function MascotSpeech({ message, mood = 'idle', name = 'Zara', size = 90 }: MascotSpeechProps) {
   return (
     <div className="flex flex-col items-center gap-3">
       <MascotSVG mood={mood} size={size} animate />

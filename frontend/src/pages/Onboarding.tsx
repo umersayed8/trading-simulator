@@ -12,10 +12,10 @@ type Skill = 'beginner' | 'intermediate' | null;
 const STEPS = [
   {
     mood:      'excited'  as const,
-    title:     "Meet Kuma, your trading guide!",
+    title:     "Meet Zara, your trading guide!",
     subtitle:  "Your personal companion",
     icon:      BarChart2,
-    content:   "Welcome to StockSim — India's best trading simulator for young learners! Kuma will be with you every step of the way.\n\nWhether you're brand new to investing or already know a thing or two, we'll make sure you become a confident, knowledgeable trader.",
+    content:   "Welcome to StockSim — India's best trading simulator for young learners! Zara will be with you every step of the way.\n\nWhether you're brand new to investing or already know a thing or two, we'll make sure you become a confident, knowledgeable trader.",
     highlight: "100% virtual money. 0% real risk. Real skills.",
   },
   {

@@ -120,7 +120,7 @@ export default function Learn() {
               return (
                 <button key={cat} onClick={() => setSelectedCat(cat)}
                   className={`p-3 rounded-xl border text-left transition-all ${m.bg} ${selectedCat===cat?'ring-2 ring-indigo-400':''}`}>
-                  <div className="flex items-center gap-1.5 mb-1"><span>{m.emoji}</span><span className={`text-xs font-bold ${m.color}`}>{m.label}</span></div>
+                  <div className="flex items-center gap-1.5 mb-1"><span>{m.icon}</span><span className={`text-xs font-bold ${m.color}`}>{m.label}</span></div>
                   <p className="text-xs text-gray-500">{data.completed}/{data.total}</p>
                   <div className="mt-1.5 h-1 bg-white/60 rounded-full"><div className={`h-full rounded-full transition-all ${m.color.replace('text','bg')}`} style={{width:`${pct}%`}} /></div>
                 </button>
@@ -186,7 +186,7 @@ export default function Learn() {
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${diff.color}`}>
                     <span className={`inline-block w-1.5 h-1.5 rounded-full ${diff.dot} mr-1.5`} />{diff.label}
                   </span>
-                  {catM && <span className="text-xs text-gray-400">{catM.emoji} {catM.label}</span>}
+                  {catM && <span className="text-xs text-gray-400">{catM.icon} {catM.label}</span>}
                 </div>
                 {lesson.completed ? <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                   : lesson.locked ? <Lock className="w-5 h-5 text-gray-300 flex-shrink-0" /> : null}
