@@ -42,10 +42,12 @@ export const tradingApi = {
   getQuote:        (symbol: string)               => api.get(`/trading/stocks/${symbol}/quote`),
   getHistory:      (symbol: string, period?: string) =>
                      api.get(`/trading/stocks/${symbol}/history`, { params: { period } }),
+  getNews:         (symbol: string)               => api.get(`/trading/stocks/${symbol}/news`),
   placeOrder:      (data: { symbol: string; type: 'BUY' | 'SELL'; quantity: number }) =>
                      api.post('/trading/orders', data),
   getOrders:       (limit?: number, offset?: number) =>
                      api.get('/trading/orders', { params: { limit, offset } }),
+  getTodayTradeCount: ()                          => api.get('/trading/orders/today-count'),
   // New endpoints powered by indianapi.in
   getRecommended:  () => api.get('/trading/stocks/recommended'),
   getInsights:     () => api.get('/trading/insights'),

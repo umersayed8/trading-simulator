@@ -228,6 +228,16 @@ router.post(
         return;
       }
 
+      // ─── Daily trade limit (anti-addiction) ──────────────────────────
+      const histResult = await Portfolio.getTradeHistory(userId, 200, 0);
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const todayCount = histResult.trades.filter((t: any) => new Date(t.executedAt) >= today).length;
+      if (todayCount >= 30) {
+        res.status(429).json(errorResponse('DAILY_LIMIT_REACHED',
+          'You have reached your daily limit of 30 trades. Please take a break and come back tomorrow! 🐻'));
+        return;
+      }
+
       const quote = await StockData.getQuote(symbol);
       if (!quote) {
         res.status(404).json(errorResponse('NOT_FOUND', 'Stock not found'));
@@ -261,6 +271,40 @@ router.post(
     }
   }
 );
+
+// ─── Get stock news ───────────────────────────────────────────────────────────
+router.get('/stocks/:symbol/news', async (req, res: Response) => {
+  try {
+    const raw    = req.params.symbol;
+    const symbol = StockData.resolveToTicker(raw);
+    if (!StockData.isValidTicker(symbol)) {
+      res.status(400).json(errorResponse('INVALID_SYMBOL', `"${raw}" is not a valid stock symbol.`));
+      return;
+    }
+    const news = await StockData.getStockNews(symbol);
+    res.json(successResponse(news));
+  } catch (error) {
+    console.error('News error:', error);
+    res.status(500).json(errorResponse('SERVER_ERROR', 'Failed to get news'));
+  }
+});
+
+// ─── Daily trade count (for addiction control) ────────────────────────────────
+router.get('/orders/today-count', authenticate, async (req: AuthenticatedRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const result = await Portfolio.getTradeHistory(userId, 200, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const todayCount = result.trades.filter((t: any) => {
+      const d = new Date(t.executedAt);
+      return d >= today;
+    }).length;
+    res.json(successResponse({ count: todayCount, limit: 30 }));
+  } catch (error) {
+    res.status(500).json(errorResponse('SERVER_ERROR', 'Failed to get trade count'));
+  }
+});
 
 // ─── Get order history ────────────────────────────────────────────────────────
 router.get('/orders', authenticate, async (req: AuthenticatedRequest, res: Response) => {

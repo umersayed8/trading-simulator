@@ -1,3 +1,4 @@
+import { validationResult } from 'express-validator';
 /* =========================================================
    Indian Stock Market Service – indianapi.in
    ========================================================= */
@@ -232,6 +233,7 @@ export async function getQuote(rawSymbol: string): Promise<StockQuote | null> {
 
   try {
     const json  = await apiFetch(`/stock?name=${encodeURIComponent(symbol)}`);
+
     const quote = transformQuote(json, symbol);
     quoteCache.set(symbol, { data: quote, timestamp: Date.now() });
     return quote;
@@ -391,5 +393,35 @@ export async function getAnalystRec(stockId: string): Promise<AnalystRec | null>
   } catch (err) {
     console.error(`[stockData] getAnalystRec error for ${stockId}:`, err);
     return null;
+  }
+}
+
+// ─── STOCK NEWS ──────────────────────────────────────────────────────────────
+
+export interface StockNews {
+  headline: string;
+  url: string;
+  source: string;
+  publishedAt: string;
+  summary?: string;
+}
+
+export async function getStockNews(rawSymbol: string): Promise<StockNews[]> {
+  const symbol = resolveToTicker(rawSymbol);
+  if (!isValidTicker(symbol)) return [];
+  try {
+    // The indianapi.in /stock endpoint returns news in the response
+    const json = await apiFetch(`/stock?name=${encodeURIComponent(symbol)}`);
+    const rawNews: any[] = json.news ?? json.recentNews ?? json.latest_news ?? [];
+    return rawNews.slice(0, 6).map((n: any) => ({
+      headline:    n.headline ?? n.title ?? n.heading ?? 'News update',
+      url:         n.url ?? n.link ?? '#',
+      source:      n.source ?? n.publisher ?? 'Market News',
+      publishedAt: n.publishedAt ?? n.date ?? n.published_date ?? new Date().toISOString(),
+      summary:     n.summary ?? n.description ?? '',
+    }));
+  } catch (err) {
+    console.error(`[stockData] getStockNews error for ${symbol}:`, err);
+    return [];
   }
 }

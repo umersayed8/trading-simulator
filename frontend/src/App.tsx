@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Trade from './pages/Trade';
+import StockDetail from './pages/StockDetail';
 import Portfolio from './pages/Portfolio';
 import Leaderboard from './pages/Leaderboard';
 import AlgoTrading from './pages/AlgoTrading';
@@ -39,6 +40,7 @@ export default function App() {
         <Route path="dashboard"    element={<Dashboard />} />
         <Route path="trade"        element={<Trade />} />
         <Route path="trade/:symbol" element={<Trade />} />
+        <Route path="stocks/:symbol" element={<StockDetail />} />
         <Route path="portfolio"    element={<Portfolio />} />
         <Route path="leaderboard"  element={<Leaderboard />} />
         <Route path="algo"         element={<AlgoTrading />} />
