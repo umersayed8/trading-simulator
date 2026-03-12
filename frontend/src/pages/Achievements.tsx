@@ -83,7 +83,7 @@ export default function Achievements() {
       <MascotTip
         mood={unlocked > 5 ? 'celebrating' : 'happy'}
         message={MASCOT_MESSAGES[unlocked % MASCOT_MESSAGES.length]}
-        title="Zara's Message"
+        title="Kate's Message"
         className="card"
       />
 

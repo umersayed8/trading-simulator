@@ -131,7 +131,7 @@ export default function Learn() {
       )}
 
       {/* Mascot */}
-      <MascotTip mood="happy" message={MASCOT_TIPS[selectedCat] || MASCOT_TIPS.all} title="Zara's Tip" className="card" />
+      <MascotTip mood="happy" message={MASCOT_TIPS[selectedCat] || MASCOT_TIPS.all} title="Kate's Tip" className="card" />
 
       {/* Continue CTA */}
       {nextLesson && selectedCat === 'all' && (

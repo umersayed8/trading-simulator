@@ -40,7 +40,7 @@ export const achievements = [
     // ── BEGINNER ──────────────────────────────────────────────────────────────
     mkLesson('What is the Stock Market?', 'Discover how millions of people invest in businesses every day', 'basics', 'beginner', 25, 5, 1, null, {
       sections: [
-        { type: 'story', title: 'Meet Zara', content: 'Zara is 17 and curious about where rich people put their money. She overheard her parents talking about "the market going up." What does that even mean?' },
+        { type: 'story', title: 'Meet Kate', content: 'Kate is 17 and curious about where rich people put their money. She overheard her parents talking about "the market going up." What does that even mean?' },
         { type: 'text', title: 'The Stock Market Explained', content: 'The stock market is a marketplace where people buy and sell tiny pieces of companies. Just like a vegetable market sells vegetables, the stock market sells ownership pieces of businesses.' },
         { type: 'example', title: 'NSE & BSE — India\'s Two Main Exchanges', content: 'In India we have two major stock exchanges: the NSE (National Stock Exchange) and BSE (Bombay Stock Exchange, est. 1875 — Asia\'s oldest!). Companies list their shares here so anyone can buy them.' },
         { type: 'text', title: 'Why Does It Exist?', content: 'Companies need money to grow. Instead of only borrowing from banks, they can sell small ownership pieces (shares) to thousands of investors. Investors get a chance to profit as the company grows.' },
@@ -54,7 +54,7 @@ export const achievements = [
 
     mkLesson('What is a Share?', 'Understand what you actually own when you buy a share', 'basics', 'beginner', 25, 5, 2, 1, {
       sections: [
-        { type: 'story', title: 'The Pizza Shop Analogy', content: 'Zara and 3 friends want to open a pizza shop worth ₹1,00,000. They split it into 1,000 equal parts (shares) at ₹100 each. Each friend buys 250 shares. They each own 25% of the pizza shop.' },
+        { type: 'story', title: 'The Pizza Shop Analogy', content: 'Kate and 3 friends want to open a pizza shop worth ₹1,00,000. They split it into 1,000 equal parts (shares) at ₹100 each. Each friend buys 250 shares. They each own 25% of the pizza shop.' },
         { type: 'text', title: 'Shares = Ownership', content: 'A share (also called a stock) represents one unit of ownership in a company. If Reliance Industries has 1,000 crore shares and you own 100, you own a tiny fraction of one of India\'s biggest companies.' },
         { type: 'example', title: 'Rights as a Shareholder', content: 'As a shareholder you may receive: Dividends (share of profits), Voting rights on company decisions, and a claim on assets if the company is sold.' },
         { type: 'text', title: 'Face Value vs Market Price', content: 'Shares have a "face value" (usually ₹1 or ₹10) which is the original price. The "market price" is what people are currently willing to pay — this changes every second during market hours!' },
