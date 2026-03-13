@@ -15,12 +15,12 @@ interface Progress {
   categories: Record<string, { completed: number; total: number }>;
 }
 
-const CATEGORY_META: Record<string, { icon: string; color: string; bg: string; label: string }> = {
-  basics:       { icon: 'basics', color: 'text-blue-700',    bg: 'bg-blue-50 border-blue-100',       label: 'Basics'       },
-  algo:         { icon: 'algo',   color: 'text-primary-700', bg: 'bg-primary-50 border-primary-100', label: 'Algo Trading' },
-  fundamentals: { icon: 'fundamentals', color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-100', label: 'Fundamentals' },
-  technical:    { icon: 'technical', color: 'text-primary-700',  bg: 'bg-primary-50 border-primary-100',   label: 'Technical'    },
-  advanced:     { icon: 'advanced', color: 'text-red-700',     bg: 'bg-red-50 border-red-100',         label: 'Advanced'     },
+const CATEGORY_META: Record<string, { color: string; bg: string; label: string }> = {
+  basics:       {  color: 'text-blue-700',    bg: 'bg-blue-50 border-blue-100',       label: 'Basics'       },
+  algo:         {    color: 'text-primary-700', bg: 'bg-primary-50 border-primary-100', label: 'Algo Trading' },
+  fundamentals: {  color: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-100', label: 'Fundamentals' },
+  technical:    {  color: 'text-primary-700',  bg: 'bg-primary-50 border-primary-100',   label: 'Technical'    },
+  advanced:     {  color: 'text-red-700',     bg: 'bg-red-50 border-red-100',         label: 'Advanced'     },
 };
 const DIFF_META = {
   beginner:     { label: 'Beginner',     color: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-400' },
@@ -120,7 +120,7 @@ export default function Learn() {
               return (
                 <button key={cat} onClick={() => setSelectedCat(cat)}
                   className={`p-3 rounded-xl border text-left transition-all ${m.bg} ${selectedCat===cat?'ring-2 ring-indigo-400':''}`}>
-                  <div className="flex items-center gap-1.5 mb-1"><span>{m.icon}</span><span className={`text-xs font-bold ${m.color}`}>{m.label}</span></div>
+                  <div className="flex items-center gap-1.5 mb-1"><span className={`text-xs font-bold ${m.color}`}>{m.label}</span></div>
                   <p className="text-xs text-gray-500">{data.completed}/{data.total}</p>
                   <div className="mt-1.5 h-1 bg-white/60 rounded-full"><div className={`h-full rounded-full transition-all ${m.color.replace('text','bg')}`} style={{width:`${pct}%`}} /></div>
                 </button>
@@ -186,7 +186,7 @@ export default function Learn() {
                   <span className={`text-xs font-bold px-2.5 py-1 rounded-lg ${diff.color}`}>
                     <span className={`inline-block w-1.5 h-1.5 rounded-full ${diff.dot} mr-1.5`} />{diff.label}
                   </span>
-                  {catM && <span className="text-xs text-gray-400">{catM.icon} {catM.label}</span>}
+                  {catM && <span className="text-xs text-gray-400">{catM.label}</span>}
                 </div>
                 {lesson.completed ? <CheckCircle className="w-5 h-5 text-emerald-500 flex-shrink-0" />
                   : lesson.locked ? <Lock className="w-5 h-5 text-gray-300 flex-shrink-0" /> : null}
