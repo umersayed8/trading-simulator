@@ -10,13 +10,14 @@ interface LeaderboardEntry {
   level: number;
   portfolioValue: number;
   pnlPercent: number;
+  totalPnL: number;
 }
 
 export default function Leaderboard() {
   const { user } = useAuth();
   const [period, setPeriod] = useState<'weekly' | 'monthly' | 'alltime'>('weekly');
   const [rankings, setRankings] = useState<LeaderboardEntry[]>([]);
-  const [userRank, setUserRank] = useState<{ rank: number; portfolioValue: number; pnlPercent: number } | null>(null);
+  const [userRank, setUserRank] = useState<{ rank: number; portfolioValue: number; pnlPercent: number; totalPnL: number } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -131,6 +132,9 @@ export default function Leaderboard() {
                 )}
                 {userRank.pnlPercent >= 0 ? '+' : ''}{userRank.pnlPercent.toFixed(2)}%
               </p>
+              <p className={`text-xs font-medium ${userRank.totalPnL >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
+                {userRank.totalPnL >= 0 ? '+' : ''}{formatCurrency(userRank.totalPnL)}
+              </p>
             </div>
           </div>
         </div>
@@ -153,6 +157,9 @@ export default function Leaderboard() {
             <p className={`text-xs ${rankings[1].pnlPercent >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
               {rankings[1].pnlPercent >= 0 ? '+' : ''}{rankings[1].pnlPercent.toFixed(2)}%
             </p>
+            <p className={`text-xs font-medium ${rankings[1].totalPnL >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
+              {rankings[1].totalPnL >= 0 ? '+' : ''}{formatCurrency(rankings[1].totalPnL)}
+            </p>
           </div>
 
           {/* 1st Place */}
@@ -168,6 +175,9 @@ export default function Leaderboard() {
             <p className={`text-xs ${rankings[0].pnlPercent >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
               {rankings[0].pnlPercent >= 0 ? '+' : ''}{rankings[0].pnlPercent.toFixed(2)}%
             </p>
+            <p className={`text-xs font-medium ${rankings[0].totalPnL >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
+              {rankings[0].totalPnL >= 0 ? '+' : ''}{formatCurrency(rankings[0].totalPnL)}
+            </p>
           </div>
 
           {/* 3rd Place */}
@@ -182,6 +192,9 @@ export default function Leaderboard() {
             </p>
             <p className={`text-xs ${rankings[2].pnlPercent >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
               {rankings[2].pnlPercent >= 0 ? '+' : ''}{rankings[2].pnlPercent.toFixed(2)}%
+            </p>
+            <p className={`text-xs font-medium ${rankings[2].totalPnL >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
+              {rankings[2].totalPnL >= 0 ? '+' : ''}{formatCurrency(rankings[2].totalPnL)}
             </p>
           </div>
         </div>
@@ -227,6 +240,9 @@ export default function Leaderboard() {
                     <TrendingDown className="w-3 h-3 mr-0.5" />
                   )}
                   {entry.pnlPercent >= 0 ? '+' : ''}{entry.pnlPercent.toFixed(2)}%
+                </p>
+                <p className={`text-xs font-medium ${entry.totalPnL >= 0 ? 'text-success-500' : 'text-danger-500'}`}>
+                  {entry.totalPnL >= 0 ? '+' : ''}{formatCurrency(entry.totalPnL)}
                 </p>
               </div>
             </div>
