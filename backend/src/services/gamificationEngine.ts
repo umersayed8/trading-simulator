@@ -20,6 +20,7 @@ export interface LeaderboardEntry {
   level: number;
   portfolioValue: number;
   pnlPercent: number;
+  totalPnL: number;
 }
 
 export async function getProfile(userId: number): Promise<GamificationProfile | null> {

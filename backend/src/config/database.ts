@@ -29,25 +29,25 @@ export async function testConnection(): Promise<boolean> {
 }
 
 // Execute a query with parameters
-export async function query<T>(sql: string, params?: unknown[]): Promise<T> {
+export async function query<T>(sql: string, params?: any[]): Promise<T> {
   const [rows] = await pool.execute(sql, params);
   return rows as T;
 }
 
 // Get a single row
-export async function queryOne<T>(sql: string, params?: unknown[]): Promise<T | null> {
+export async function queryOne<T>(sql: string, params?: any[]): Promise<T | null> {
   const rows = await query<T[]>(sql, params);
   return rows.length > 0 ? rows[0] : null;
 }
 
 // Insert and return the inserted ID
-export async function insert(sql: string, params?: unknown[]): Promise<number> {
+export async function insert(sql: string, params?: any[]): Promise<number> {
   const [result] = await pool.execute(sql, params);
   return (result as mysql.ResultSetHeader).insertId;
 }
 
 // Update/delete and return affected rows
-export async function update(sql: string, params?: unknown[]): Promise<number> {
+export async function update(sql: string, params?: any[]): Promise<number> {
   const [result] = await pool.execute(sql, params);
   return (result as mysql.ResultSetHeader).affectedRows;
 }
