@@ -200,45 +200,79 @@ export async function getLeaderboard(limit: number = 50): Promise<Array<{
   level: number;
   portfolioValue: number;
   pnlPercent: number;
+  totalPnL: number;
 }>> {
-
-  // 🔐 sanitize limit (VERY IMPORTANT)
   const safeLimit = Math.max(1, Math.min(Number(limit) || 50, 100));
 
-  const results = await query<Array<{
+  // Step 1: get all users with their portfolios (balance + cost basis for quick pre-sort)
+  const rows = await query<Array<{
     user_id: number;
     username: string;
     level: number;
+    portfolio_id: number;
     balance: string;
-    holdings_value: string;
   }>>(
     `
-    SELECT 
-      u.id AS user_id,
+    SELECT
+      u.id   AS user_id,
       u.username,
       u.level,
-      p.balance,
-      COALESCE(SUM(h.quantity * h.avg_buy_price), 0) AS holdings_value
+      p.id   AS portfolio_id,
+      p.balance
     FROM users u
     JOIN portfolios p ON u.id = p.user_id
-    LEFT JOIN holdings h ON p.id = h.portfolio_id
-    GROUP BY u.id, u.username, u.level, p.balance
-    ORDER BY (p.balance + COALESCE(SUM(h.quantity * h.avg_buy_price), 0)) DESC
-    LIMIT ${safeLimit};
+    ORDER BY u.id
+    LIMIT ${safeLimit * 10};
     `
   );
 
+  if (!rows.length) return [];
 
-  
-  let res =  results.map((row, index) => ({
-    rank: index + 1,
-    userId: row.user_id,
-    username: row.username,
-    level: row.level,
-    portfolioValue: Number.parseFloat(row.balance) + Number.parseFloat(row.holdings_value),
-    pnlPercent: ((Number.parseFloat(row.balance) + Number.parseFloat(row.holdings_value)- 100000) / 100000) * 100,
-  }));
+  // Step 2: for every user, get their holdings with LIVE current prices
+  // Import here to avoid circular dep at module level
+  const { getHoldingsWithValues } = await import('./Portfolio');
+  const STARTING_BALANCE = 100000;
 
-  return res;
+  const enriched = await Promise.all(
+    rows.map(async (row) => {
+      try {
+        const holdings = await getHoldingsWithValues(row.portfolio_id);
+        const cash         = Number(row.balance) || 0;
+        const currentValue = holdings.reduce((s, h) => s + h.currentValue,  0);
+        const investedCost = holdings.reduce((s, h) => s + h.investedValue, 0);
+
+        const portfolioValue = cash + currentValue;
+        // P&L % = how much the total portfolio has grown from the starting balance
+        const totalPnL  = portfolioValue - STARTING_BALANCE;
+        const pnlPercent = ((portfolioValue - STARTING_BALANCE) / STARTING_BALANCE) * 100;
+
+        return {
+          userId:       row.user_id,
+          username:     row.username,
+          level:        row.level,
+          portfolioValue: Math.round(portfolioValue * 100) / 100,
+          totalPnL:     Math.round(totalPnL   * 100) / 100,
+          pnlPercent:   Math.round(pnlPercent * 100) / 100,
+        };
+      } catch {
+        // If live price fetch fails fall back to cost-basis so the row still appears
+        const cash  = Number(row.balance) || 0;
+        return {
+          userId:        row.user_id,
+          username:      row.username,
+          level:         row.level,
+          portfolioValue: cash,
+          totalPnL:      cash - STARTING_BALANCE,
+          pnlPercent:    ((cash - STARTING_BALANCE) / STARTING_BALANCE) * 100,
+        };
+      }
+    })
+  );
+
+  // Step 3: sort by portfolioValue desc, slice, assign ranks
+  return enriched
+    .sort((a, b) => b.portfolioValue - a.portfolioValue)
+    .slice(0, safeLimit)
+    .map((entry, index) => ({ rank: index + 1, ...entry }));
 }
 

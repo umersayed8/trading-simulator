@@ -120,6 +120,7 @@ router.get(
                         rank: profile.rank,
                         portfolioValue: userInList?.portfolioValue || 100000,
                         pnlPercent: userInList?.pnlPercent || 0,
+                        totalPnL: userInList?.totalPnL || 0,
                     };
                 }
             }
